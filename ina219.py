@@ -1,4 +1,6 @@
-import smbus
+#!/usr/bin/env -S /bin/sh -c 'exec "$(dirname $(realpath "$0"))/venv/bin/python3" "$0" "$@"'
+# The shebang above finds the local virtual environment "venv" and executes the script using that
+
 import time
 
 # Config Register (R/W)
