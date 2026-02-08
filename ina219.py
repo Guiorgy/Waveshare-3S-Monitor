@@ -19,33 +19,37 @@ _REG_CURRENT                = 0x04
 _REG_CALIBRATION            = 0x05
 
 class BusVoltageRange:
-    """Constants for ``bus_voltage_range``"""
+    """Constants for `bus_voltage_range`"""
+
     RANGE_16V               = 0x00      # set bus voltage range to 16V
     RANGE_32V               = 0x01      # set bus voltage range to 32V (default)
 
 class Gain:
-    """Constants for ``gain``"""
+    """Constants for `gain`"""
+
     DIV_1_40MV              = 0x00      # shunt prog. gain set to  1, 40 mV range
     DIV_2_80MV              = 0x01      # shunt prog. gain set to /2, 80 mV range
     DIV_4_160MV             = 0x02      # shunt prog. gain set to /4, 160 mV range
     DIV_8_320MV             = 0x03      # shunt prog. gain set to /8, 320 mV range
 
 class ADCResolution:
-    """Constants for ``bus_adc_resolution`` or ``shunt_adc_resolution``"""
-    ADCRES_9BIT_1S          = 0x00      #  9bit,   1 sample,     84us
-    ADCRES_10BIT_1S         = 0x01      # 10bit,   1 sample,    148us
-    ADCRES_11BIT_1S         = 0x02      # 11 bit,  1 sample,    276us
-    ADCRES_12BIT_1S         = 0x03      # 12 bit,  1 sample,    532us
-    ADCRES_12BIT_2S         = 0x09      # 12 bit,  2 samples,  1.06ms
-    ADCRES_12BIT_4S         = 0x0A      # 12 bit,  4 samples,  2.13ms
-    ADCRES_12BIT_8S         = 0x0B      # 12bit,   8 samples,  4.26ms
-    ADCRES_12BIT_16S        = 0x0C      # 12bit,  16 samples,  8.51ms
-    ADCRES_12BIT_32S        = 0x0D      # 12bit,  32 samples, 17.02ms
-    ADCRES_12BIT_64S        = 0x0E      # 12bit,  64 samples, 34.05ms
-    ADCRES_12BIT_128S       = 0x0F      # 12bit, 128 samples, 68.10ms
+    """Constants for `bus_adc_resolution` or `shunt_adc_resolution`"""
+
+    ADCRES_9BIT_1S          = 0x00      #  9 bit,    1 sample,    84 us
+    ADCRES_10BIT_1S         = 0x01      # 10 bit,    1 sample,   148 us
+    ADCRES_11BIT_1S         = 0x02      # 11 bit,    1 sample,   276 us
+    ADCRES_12BIT_1S         = 0x03      # 12 bit,    1 sample,   532 us
+    ADCRES_12BIT_2S         = 0x09      # 12 bit,   2 samples,  1.06 ms
+    ADCRES_12BIT_4S         = 0x0A      # 12 bit,   4 samples,  2.13 ms
+    ADCRES_12BIT_8S         = 0x0B      # 12 bit,   8 samples,  4.26 ms
+    ADCRES_12BIT_16S        = 0x0C      # 12 bit,  16 samples,  8.51 ms
+    ADCRES_12BIT_32S        = 0x0D      # 12 bit,  32 samples, 17.02 ms
+    ADCRES_12BIT_64S        = 0x0E      # 12 bit,  64 samples, 34.05 ms
+    ADCRES_12BIT_128S       = 0x0F      # 12 bit, 128 samples, 68.10 ms
 
 class Mode:
-    """Constants for ``mode``"""
+    """Constants for `mode`"""
+
     POWERDOW                = 0x00      # power down
     SVOLT_TRIGGERED         = 0x01      # shunt voltage triggered
     BVOLT_TRIGGERED         = 0x02      # bus voltage triggered
@@ -78,10 +82,12 @@ class INA219:
         self.bus.write_i2c_block_data(self.addr,address,temp)
 
     def set_calibration_32V_2A(self):
-        """Configures to INA219 to be able to measure up to 32V and 2A of current. Counter
-           overflow occurs at 3.2A.
-           ..note :: These calculations assume a 0.1 shunt ohm resistor is present
         """
+        Configures INA219 to be able to measure up to 32V and 2A of current.
+        Counter overflow occurs at 3.2A.
+        Note: These calculations assume a 0.1 shunt ohm resistor is present
+        """
+
         # By default we use a pretty huge range for the input voltage,
         # which probably isn't the most appropriate choice for system
         # that don't use a lot of power.  But all of the calculations
@@ -102,9 +108,9 @@ class INA219:
 
         # 3. Calculate possible range of LSBs (Min = 15-bit, Max = 12-bit)
         # MinimumLSB = MaxExpected_I/32767
-        # MinimumLSB = 0.000061              (61uA per bit)
+        # MinimumLSB = 0.000061               (61uA per bit)
         # MaximumLSB = MaxExpected_I/4096
-        # MaximumLSB = 0,000488              (488uA per bit)
+        # MaximumLSB = 0,000488               (488uA per bit)
 
         # 4. Choose an LSB between the min and max values
         #    (Preferrably a roundish number close to MinLSB)
@@ -162,19 +168,19 @@ class INA219:
                       self.shunt_adc_resolution << 3 | \
                       self.mode
         self.write(_REG_CONFIG,self.config)
-        
+
     def getShuntVoltage_mV(self):
         self.write(_REG_CALIBRATION,self._cal_value)
         value = self.read(_REG_SHUNTVOLTAGE)
         if value > 32767:
             value -= 65535
         return value * 0.01
-        
-    def getBusVoltage_V(self):  
+
+    def getBusVoltage_V(self):
         self.write(_REG_CALIBRATION,self._cal_value)
         self.read(_REG_BUSVOLTAGE)
         return (self.read(_REG_BUSVOLTAGE) >> 3) * 0.004
-        
+
     def getCurrent_mA(self):
         value = self.read(_REG_CURRENT)
         if value > 32767:
@@ -187,9 +193,8 @@ class INA219:
         if value > 32767:
             value -= 65535
         return value * self._power_lsb
-    
+
 if __name__=='__main__':
- 
     # Create an ADS1115 ADC (16-bit) instance.
     ina219 = INA219(addr=0x42)
     while True:
@@ -209,5 +214,5 @@ if __name__=='__main__':
         print("Power:         {:6.3f} W".format(power))
         print("Percent:       {:3.1f}%".format(p))
         print("")
-        
+
         time.sleep(2)
