@@ -1,16 +1,12 @@
-# UPS Power Module
+# Waveshare-3S-Monitor
 
-UPS Power Module is a system server to display the UPS Power Module's power (and other stats)
-
-If you find an issue, please [let us know](../..//issues)!
+A Python script to monitor a Waveshare UPS Module 3S
 
 ## Setup
 
-Follow the steps below to download UPS-Power-Moduledirectly or create it from scratch.
-
-On the jetson nano, run the ups-display installation script
-
-    git clone https://github.com/waveshare/UPS-Power-Module
-    cd UPS-Power-Module
-    ./install.sh <password>
-
+```bash
+# Download the script and license files
+curl -fsSLO https://raw.githubusercontent.com/Guiorgy/Waveshare-3S-Monitor/refs/heads/main/ina219.py
+curl -fsSLO https://raw.githubusercontent.com/Guiorgy/Waveshare-3S-Monitor/refs/heads/main/LICENSE
+chmod +x ina219.py
+```
