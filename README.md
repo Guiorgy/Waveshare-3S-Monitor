@@ -12,5 +12,5 @@ chmod +x ina219.py
 
 # Setup a virtual environment
 python3 -m venv venv
-venv/bin/pip install smbus
+venv/bin/pip install smbus2
 ```
